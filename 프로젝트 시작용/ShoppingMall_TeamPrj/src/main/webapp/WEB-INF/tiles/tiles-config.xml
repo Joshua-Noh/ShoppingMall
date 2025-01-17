@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+    <!-- 기본 레이아웃 -->
+    <definition name="baseLayout" template="/WEB-INF/views/layouts/baseLayout.jsp">
+        <put-attribute name="header" value="/WEB-INF/views/layouts/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/footer.jsp" />
+        <put-attribute name="menu" value="/WEB-INF/views/layouts/menu.jsp" />
+        <put-attribute name="content" value="" />
+    </definition>
+
+    <!-- 회원 목록 -->
+    <definition name="memberList" extends="baseLayout">
+        <put-attribute name="content" value="/WEB-INF/views/member/listMembers.jsp" />
+    </definition>
+
+    <!-- 회원 등록 -->
+    <definition name="addMemberForm" extends="baseLayout">
+        <put-attribute name="content" value="/WEB-INF/views/member/addMemberForm.jsp" />
+    </definition>
+
+    <!-- 로그인 폼 -->
+    <definition name="loginForm" extends="baseLayout">
+        <put-attribute name="content" value="/WEB-INF/views/member/loginForm.jsp" />
+    </definition>
+</tiles-definitions>
