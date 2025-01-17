@@ -69,4 +69,10 @@
     DELETE FROM users WHERE user_id = #{id}
 </delete>
     
+    <select id="loginById" parameterType="java.util.Map" resultType="com.shop.ShoppingMall_TeamPrj.main.member.vo.MemberVO">
+    SELECT * 
+    FROM users
+    WHERE email = #{email}
+      AND password = #{password}
+</select>
 </mapper>

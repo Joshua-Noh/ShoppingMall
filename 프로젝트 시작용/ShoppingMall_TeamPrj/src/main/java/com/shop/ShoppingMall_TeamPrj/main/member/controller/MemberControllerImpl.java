@@ -68,17 +68,22 @@ public class MemberControllerImpl   implements MemberController {
         return mav;
     }
 
-	@Override
-	@RequestMapping(value="/member/addMember.do" ,method = RequestMethod.POST)
-	public ModelAndView addMember(@ModelAttribute("member") MemberVO member,
-			                  HttpServletRequest request, HttpServletResponse response) throws Exception {
-		request.setCharacterEncoding("utf-8");
-		response.setContentType("html/text;charset=utf-8");
-		int result = 0;
-		result = memberService.addMember(member);
-		ModelAndView mav = new ModelAndView("redirect:/member/listMembers.do");
-		return mav;
-	}
+    @Override
+    @RequestMapping(value="/member/addMember.do", method=RequestMethod.POST)
+    public ModelAndView addMember(@ModelAttribute("member") MemberVO member,
+                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setCharacterEncoding("utf-8");
+        response.setContentType("text/html;charset=utf-8");
+
+        int result = memberService.addMember(member);
+
+        HttpSession session = request.getSession();
+        session.setAttribute("welcomeMessage", member.getUser_name() + "님 가입을 환영합니다. 다시 로그인해주세요.");
+        
+        return new ModelAndView("redirect:/main/main.do");
+    }
+
+
 	
 	@Override
 	@RequestMapping(value="/member/removeMember.do", method = RequestMethod.GET)
@@ -109,40 +114,47 @@ public class MemberControllerImpl   implements MemberController {
 	@Override
 	@RequestMapping(value = "/member/login.do", method = RequestMethod.POST)
 	public ModelAndView login(@ModelAttribute("member") MemberVO member,
-				              RedirectAttributes rAttr,
-		                       HttpServletRequest request, HttpServletResponse response) throws Exception {
-	ModelAndView mav = new ModelAndView();
-	memberVO = memberService.login(member);
-	if(memberVO != null) {
-	    HttpSession session = request.getSession();
-	    session.setAttribute("member", memberVO);
-	    session.setAttribute("isLogOn", true);
-	    //mav.setViewName("redirect:/member/listMembers.do");
-	    String action = (String)session.getAttribute("action");
-	    session.removeAttribute("action");
-	    if(action!= null) {
-	       mav.setViewName("redirect:"+action);
-	    }else {
-	       mav.setViewName("redirect:/member/listMembers.do");	
+	                          RedirectAttributes rAttr,
+	                          HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    ModelAndView mav = new ModelAndView();
+	    memberVO = memberService.login(member);
+
+	    if (memberVO != null) {
+	        HttpSession session = request.getSession();
+	        session.setAttribute("member", memberVO);
+	        session.setAttribute("isLogOn", true);
+
+	        String action = (String) session.getAttribute("action");
+	        session.removeAttribute("action");
+
+	        if (action != null) {
+	            mav.setViewName("redirect:" + action);
+	        } else {
+	            mav.setViewName("redirect:/main/main.do"); // 기본 경로를 메인 페이지로 설정
+	        }
+
+	    } else {
+	        rAttr.addAttribute("result", "loginFailed");
+	        mav.setViewName("redirect:/member/loginForm.do");
 	    }
 
-	}else {
-	   rAttr.addAttribute("result","loginFailed");
-	   mav.setViewName("redirect:/member/loginForm.do");
-	}
-	return mav;
+	    return mav;
 	}
 
 	@Override
-	@RequestMapping(value = "/member/logout.do", method =  RequestMethod.GET)
+	@RequestMapping(value = "/member/logout.do", method = RequestMethod.GET)
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		HttpSession session = request.getSession();
-		session.removeAttribute("member");
-		session.removeAttribute("isLogOn");
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("redirect:/member/listMembers.do");
-		return mav;
-	}	
+	    HttpSession session = request.getSession();
+	    // 세션에서 로그인 관련 정보 제거
+	    session.removeAttribute("member");
+	    session.removeAttribute("isLogOn");
+
+	    // 메인 페이지로 리다이렉트
+	    ModelAndView mav = new ModelAndView();
+	    mav.setViewName("redirect:/main/main.do");
+	    return mav;
+	}
+
 
 	@RequestMapping(value = "/member/*Form.do", method =  RequestMethod.GET)
 	private ModelAndView form(@RequestParam(value= "result", required=false) String result,
