@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.member">
+	<resultMap id="memResult" type="java.util.HashMap">
+		<result property="user_id" column="user_id" />
+		<result property="user_name" column="user_name" />
+		<result property="email" column="email" />
+		<result property="phone_number" column="phone_number" />
+		<result property="address" column="address" />
+		<result property="date_of_birth" column="date_of_birth" />
+		<result property="join_date" column="join_date" />
+		<result property="gender" column="gender" />
+	</resultMap>
+
+	<select id="selectAllMemberList" resultMap="memResult">
+		SELECT
+		user_id,
+		user_name,
+		email,
+		phone_number,
+		address,
+		date_of_birth,
+		join_date,
+		gender
+		FROM users
+
+
+		<!-- select * from t_member order by joinDate desc -->
+	</select>
+	<!-- <select id="selectAllMemberList" resultType="memResult"> SELECT user_id 
+		AS id, user_name AS name, email, phone_number AS phoneNumber, address, date_of_birth 
+		AS dateOfBirth, join_date AS joinDate, gender FROM users </select> -->
+</mapper>
