@@ -37,6 +37,11 @@ public class MemberServiceImpl implements MemberService {
 	public int removeMember(String id) throws DataAccessException {
 		return memberDAO.deleteMember(id);
 	}
+   
+	@Override
+    public int updateMember(MemberVO member) {
+        return memberDAO.updateMember(member); // 영향받은 행 수 반환
+    }
 	
 	@Override
 	public MemberVO login(MemberVO memberVO) throws Exception{

@@ -48,6 +48,25 @@ public class MemberControllerImpl   implements MemberController {
 		mav.addObject("membersList", membersList);
 		return mav;
 	}
+    @Override
+    @RequestMapping(value = "/member/updateMember.do", method = RequestMethod.POST)
+    public ModelAndView updateMember(@ModelAttribute("member") MemberVO memberVO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int result = memberService.updateMember(memberVO);
+        ModelAndView mav = new ModelAndView("redirect:/member/listMembers.do");
+        if (result > 0) {
+			mav.addObject("message", "회원 정보 수정 성공");
+		} else {
+			mav.addObject("message", "회원 정보 수정 실패");
+		}
+        return mav;
+    }
+    @RequestMapping(value = "/member/management", method = RequestMethod.GET)
+    public ModelAndView showMemberManagement(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<MemberVO> membersList = memberService.listMembers(); // 회원 목록 가져오기
+        ModelAndView mav = new ModelAndView("member/memberManagement");
+        mav.addObject("membersList", membersList);
+        return mav;
+    }
 
 	@Override
 	@RequestMapping(value="/member/addMember.do" ,method = RequestMethod.POST)
@@ -62,14 +81,20 @@ public class MemberControllerImpl   implements MemberController {
 	}
 	
 	@Override
-	@RequestMapping(value="/member/removeMember.do" ,method = RequestMethod.GET)
+	@RequestMapping(value="/member/removeMember.do", method = RequestMethod.GET)
 	public ModelAndView removeMember(@RequestParam("id") String id, 
-			           HttpServletRequest request, HttpServletResponse response) throws Exception{
-		request.setCharacterEncoding("utf-8");
-		memberService.removeMember(id);
-		ModelAndView mav = new ModelAndView("redirect:/member/listMembers.do");
-		return mav;
+	                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    // UTF-8 인코딩 설정 (이미 요청에 지정되어 있으면 생략 가능)
+	    request.setCharacterEncoding("utf-8");
+	    
+	    // 서비스 호출하여 회원 삭제
+	    memberService.removeMember(id);
+
+	    // 삭제 후 회원 목록 페이지로 리다이렉트
+	    ModelAndView mav = new ModelAndView("redirect:/member/listMembers.do");
+	    return mav;
 	}
+
 	/*
 	@RequestMapping(value = { "/member/loginForm.do", "/member/memberForm.do" }, method =  RequestMethod.GET)
 	@RequestMapping(value = "/member/*Form.do", method =  RequestMethod.GET)
@@ -164,6 +189,8 @@ public class MemberControllerImpl   implements MemberController {
 		}
 		return viewName;
 	}
+
+
 
 
 }
